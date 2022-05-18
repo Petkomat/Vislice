@@ -2,24 +2,23 @@ import bottle
 import model
 
 
-vislice = model.Vislice()
+TIPKOVNICA = [
+    "QWERTZUIOPŠ",
+    "ASDFGHJKLČŽ",
+    "YXCVBNM"
+]
 
-# naredimo nekaj preteklih iger
-for i in range(1, 11):
-    id_igre = vislice.nova_igra()
-    if i < 6:
-        kandidati = "cčdfghjklmnprstštvzž"  # poraz
-    else:
-        kandidati = vislice.igre[id_igre][0].geslo  # zmaga
-    for k in kandidati:
-        vislice.ugibaj(id_igre, k)
-        if vislice.igre[id_igre][1] in [model.PORAZ, model.ZMAGA]:
-            break
+vislice = model.Vislice()
 
 
 @bottle.get("/img/<file>")
 def staticne_slike(file):
     return bottle.static_file(file, root="img")
+
+
+@bottle.get("/oblikovanje/<file>")
+def staticni_css(file):
+    return bottle.static_file(file, root="oblikovanje")
 
 
 @bottle.get("/")
@@ -35,7 +34,7 @@ def nova_igra():
 
 @bottle.get("/igra/<id_igre:int>")
 def pokazi_igro(id_igre):
-    return bottle.template("igra", id_igre=id_igre, igra=vislice.igre[id_igre][0])
+    return bottle.template("igra", id_igre=id_igre, igra=vislice.igre[id_igre][0], tipkovnica=TIPKOVNICA)
 
 
 def preveri_vnos(crka):
@@ -52,7 +51,7 @@ def ugibaj(id_igre):
         return f"<p>To ni dovoljena črka: {crka}</p>"
 
 
-@bottle.get("/pretekle_igre/")
+# @bottle.get("/pretekle_igre/")
 @bottle.post("/pretekle_igre/")
 def pokazi_pretekle_igre():
     koncane = []
