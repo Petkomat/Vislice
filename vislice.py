@@ -16,6 +16,14 @@ def staticne_slike(file):
     return bottle.static_file(file, root="img")
 
 
+@bottle.get("/favicon.ico")
+def favicon():
+    """
+    Poskrbimo za ikonico, ki se pokaže v brskalniku v zavihku levo od imena.
+    """
+    return bottle.static_file("favicon.ico", root="img")
+
+
 @bottle.get("/oblikovanje/<file>")
 def staticni_css(file):
     return bottle.static_file(file, root="oblikovanje")

@@ -94,7 +94,8 @@ class Vislice:
 
     def nalozi_igre_iz_datoteke(self):
         if os.path.exists(self.datoteka_s_stanjem):
-            zgodovina = json.load(open(self.datoteka_s_stanjem, encoding="utf-8"))
+            with open(self.datoteka_s_stanjem, encoding="utf-8") as f:
+                zgodovina = json.load(f)
             for id_igre, (geslo, crke, stanje) in zgodovina.items():
                 igra = Igra(geslo)
                 igra.crke = set(crke)
@@ -104,4 +105,5 @@ class Vislice:
         za_odlozit = {}
         for id_igre, (igra, stanje) in self.igre.items():
             za_odlozit[id_igre] = (igra.geslo, list(igra.crke), stanje)
-        json.dump(za_odlozit, open(self.datoteka_s_stanjem, "w", encoding="utf-8"))
+        with open(self.datoteka_s_stanjem, "w", encoding="utf-8") as f:
+            json.dump(za_odlozit, f)

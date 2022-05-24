@@ -4,7 +4,7 @@
 
 <ul>
 % for id_igre in koncane_igre:
-    <li><a href="http://127.0.0.1:8080/igra/{{id_igre}}">{{id_igre}}</a></li>
+    <li><a href="/igra/{{id_igre}}">{{id_igre}}</a></li>
 % end
 </ul>
 
