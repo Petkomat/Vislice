@@ -1,6 +1,6 @@
 % rebase('base.tpl')
 
-<h1>Igra {{id_igre}}</h1>
+<h1>Vislice</h1>
 
 <p>Nepravilne črke: {{igra.nepravilni_ugibi()}} </p>
 
@@ -17,11 +17,11 @@
 %end
 
 %if not igra.zmaga() and not igra.poraz():
-  <form action="/igra/{{id_igre}}" method="post">
+  <form action="/igra/" method="post">
       Ugibana črka: <input name="crka" type="text" maxlength="1"/>
-      <button type="submit" value="bla" name="xy">UGIBAJ</button>
+      <button type="submit">UGIBAJ</button>
   </form>
-  <form action="/igra/{{id_igre}}" method="post">
+  <form action="/igra/" method="post">
     %for i, vrsta in enumerate(tipkovnica):
        <div class="vrsta{{i}}">
     %  for crka in vrsta:
@@ -31,7 +31,7 @@
     %end
   </form>
 %else:
- <form action="/igra/" method="post">
+ <form action="/nova_igra/" method="post">
     <button type="submit">Nova igra</button>
 </form>
 %end

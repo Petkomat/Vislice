@@ -2,6 +2,9 @@ import bottle
 import model
 
 
+PISKOT_ZADNJA_IGRA = "zadnjaigra"
+ZADNJA_IGRA_KODA = "blazno skrivna koda"
+
 TIPKOVNICA = [
     "QWERTZUIOPŠ",
     "ASDFGHJKLČŽ",
@@ -31,13 +34,46 @@ def staticni_css(file):
 
 @bottle.get("/")
 def osnovno():
-    return bottle.template("index")
+    ime_piskota = "povratek"
+    ja = "ja"
+    if bottle.request.get_cookie(ime_piskota) == ja:
+        pozdrav = "Me veseli, da se spet srečava!"
+    else:
+        # shranimo piskotek
+        bottle.response.set_cookie(ime_piskota, ja)
+        pozdrav = "Živjo, hitro odigraj svojo prvo igro :)"
+    return bottle.template("index", pozdrav=pozdrav)
 
 
-@bottle.post("/igra/")
-def nova_igra():
+# @bottle.post("/igra/")
+# def nova_igra():
+#     nov_id = vislice.nova_igra()
+#     return bottle.redirect(f"/igra/{nov_id}")
+
+
+# @bottle.post("/igra/")
+# @bottle.get("/igra/")
+@bottle.route("/igra/", method=["GET", "POST"])
+def trenutna_igra():
+    id_igre = int(bottle.request.get_cookie(PISKOT_ZADNJA_IGRA, secret=ZADNJA_IGRA_KODA))
+    print("ID IGRE: ", id_igre)
+    crka = bottle.request.forms.crka.upper()  # avtomatsko odkorida v unicode
+    if crka:
+        if preveri_vnos(crka):
+            vislice.ugibaj(id_igre, crka)
+        else:
+            return f"<p>To ni dovoljena črka: {crka}</p>"
+    igra = vislice.igre[id_igre][0]
+    return bottle.template("igra", igra=igra, tipkovnica=TIPKOVNICA)
+
+
+# @bottle.post("/nova_igra/")
+# @bottle.get("/nova_igra/")
+@bottle.route("/nova_igra/", method=["GET", "POST"])
+def nova_igra_s_piskotki():
     nov_id = vislice.nova_igra()
-    return bottle.redirect(f"/igra/{nov_id}")
+    bottle.response.set_cookie(PISKOT_ZADNJA_IGRA, str(nov_id), path="/", secret=ZADNJA_IGRA_KODA)
+    return bottle.redirect("/igra/")
 
 
 @bottle.get("/igra/<id_igre:int>")
@@ -51,7 +87,10 @@ def preveri_vnos(crka):
 
 @bottle.post('/igra/<id_igre:int>')
 def ugibaj(id_igre):
-    crka = bottle.request.forms.getunicode('crka').upper()
+    # Namesto
+    # crka = bottle.request.forms.getunicode('crka').upper()
+    # raje preprosto napisemo
+    crka = bottle.request.forms.crka.upper()  # avtomatsko odkorida v unicode
     if preveri_vnos(crka):
         vislice.ugibaj(id_igre, crka)
         return pokazi_igro(id_igre)
