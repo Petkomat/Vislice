@@ -18,7 +18,7 @@
 
 %if not igra.zmaga() and not igra.poraz():
   <form action="/igra/" method="post">
-      Ugibana črka: <input name="crka" type="text" maxlength="1"/>
+      Ugibana črka: <input name="crka" type="text" maxlength="1" autofocus/>
       <button type="submit">UGIBAJ</button>
   </form>
   <form action="/igra/" method="post">
