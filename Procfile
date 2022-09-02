@@ -1,1 +1,1 @@
-web: python vislice.py
+web: python vislice.py global
