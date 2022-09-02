@@ -1,5 +1,6 @@
 import bottle
 import model
+import sys
 import os
 
 
@@ -109,8 +110,7 @@ def pokazi_pretekle_igre():
     return bottle.template("pretekle_igre", koncane_igre=koncane)
 
 
-# bottle.run(reloader=True, debug=True)
-if os.environ.get('APP_LOCATION') == 'heroku':
-    bottle.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
-else:
+if sys.argv[1] == "local":
     bottle.run(host='localhost', port=8080, debug=True)
+else:
+    bottle.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
